@@ -1,21 +1,42 @@
-import { NextFunction, Request, Response } from "express";
-import { ZodError, ZodObject, ZodRawShape } from "zod";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Request, Response, NextFunction } from 'express';
+import { ZodError, ZodType } from 'zod';
+import { httpStatusCode } from '../constants/httpStatusCode.constants';
+import { sendResponse } from '../utils/sendResponse';
 
-export const validateData = (schema: ZodObject<ZodRawShape>) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+const validateBody = (schema: ZodType<any>) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     try {
-      const parsed = schema.parse(req.body);
-      req.body = parsed;
+      schema.parse({
+        body: req.body,
+        params: req.params,
+        query: req.query,
+      });
       next();
-    } catch (error) {
-      if (error instanceof ZodError) {
-        const errorMessages = error.issues.map((issue) => ({
-          message: ` ${issue.path.join(".")} : ${issue.message}`,
-        }));
-        res.status(400).json({ details: errorMessages, error: "Invalid data" });
-      } else {
-        res.status(500).json({ error: "Internal Server Error" });
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const firstError = err.issues[0];
+        const path = firstError.path
+          .filter((p) => p !== 'body' && p !== 'query' && p !== 'params')
+          .join('.');
+
+        const message = path
+          ? `${path} - ${firstError.message}`
+          : firstError.message;
+
+        sendResponse(res, {
+          data: err.issues,
+          message,
+          statusCode: httpStatusCode.BAD_REQUEST,
+          success: false,
+        });
+        return;
       }
+
+      next(err);
+      return;
     }
   };
 };
+
+export default validateBody;

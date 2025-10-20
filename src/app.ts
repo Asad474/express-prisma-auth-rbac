@@ -1,23 +1,19 @@
-import cookieParser from "cookie-parser";
-import express from "express";
+import cookieParser from 'cookie-parser';
+import express, { Express } from 'express';
+import { PrismaClient } from '../generated/prisma';
+import { mainRouter } from './api/v1/modules/index.router';
+import { errorMiddleware, notFound } from './middleware/error';
 
-import { PrismaClient } from "../generated/prisma";
-import { errorMiddleware, notFound } from "./middleware/error";
-import { authRouter, userRouter } from "./routes";
-
-const createApp = (prisma: PrismaClient) => {
+const createApp = (prisma: PrismaClient): Express => {
   const app = express();
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  // Middleware to parse cookies
   app.use(cookieParser());
 
-  app.use("/api/auth", authRouter(prisma));
-  app.use("/api/user", userRouter(prisma));
+  app.use('/api/v1', mainRouter(prisma));
 
-  // Middleware for handling errors and not found routes
   app.use(notFound);
   app.use(errorMiddleware);
 
