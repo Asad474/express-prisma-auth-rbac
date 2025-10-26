@@ -1,0 +1,125 @@
+openapi: 3.0.0
+info:
+  title: RBAC API
+  version: 1.0.0
+  description: |
+    Role-Based Access Control (RBAC) API
+    A comprehensive API for managing users, roles, permissions, and access control.
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Development server
+  - url: http://localhost:3000/api/v1
+    description: Development server
+  - url: https://api.example.com/api/v1
+    description: Production server
+
+paths: {}
+
+components:
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+      description: JWT token stored in HTTP-only cookie
+
+  schemas:
+    Error:
+      type: object
+      required:
+        - success
+        - statusCode
+        - message
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+          example: false
+        statusCode:
+          type: integer
+          description: HTTP status code of the response
+          example: 400
+        message:
+          type: string
+          description: Error message (may include field name in validation cases)
+          example: 'email - Email format is invalid'
+
+    SuccessResponse:
+      type: object
+      required:
+        - success
+        - statusCode
+        - message
+      properties:
+        success:
+          type: boolean
+          example: true
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: 'Operation completed successfully'
+        data:
+          type: object
+          nullable: true
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized access
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            statusCode: 401
+            message: 'Authentication required'
+
+    ForbiddenError:
+      description: Access forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            statusCode: 403
+            message: 'Insufficient permissions'
+
+    ValidationError:
+      description: Validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            statusCode: 400
+            message: 'email - Email format is invalid'
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            statusCode: 404
+            message: 'Resource not found'
+
+    ConflictError:
+      description: Resource conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            statusCode: 409
+            message: 'Resource already exists'
+
+security:
+  - CookieAuth: []

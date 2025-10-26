@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+commit_msg=$(cat "$1")
+
+if [[ ! $commit_msg =~ ^(feat|fix|docs):[[:space:]].+$ ]]; then
+  echo "Error: Commit message must be like: feat: description, fix: description, etc."
+  echo "Your message: $commit_msg"
+  exit 1
+fi
+
+echo "Commit message OK"

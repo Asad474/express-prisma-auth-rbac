@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "public"."users" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT,
@@ -9,9 +9,6 @@ CREATE TABLE "public"."users" (
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_username_key" ON "public"."users"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "public"."users"("email");

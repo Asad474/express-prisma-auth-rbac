@@ -37,14 +37,7 @@ export default [
       'unused-imports': unusedImports,
     },
     rules: {
-      'prettier/prettier': [
-        'error',
-        {
-          singleQuote: true,
-          semi: true,
-          trailingComma: 'all',
-        },
-      ],
+      'prettier/prettier': 'error',
 
       '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
       '@typescript-eslint/explicit-function-return-type': 'error',

@@ -1,0 +1,9 @@
+echo "Running pre-commit checks..."
+
+# Run lint (which includes fixing)
+npm run lint
+
+# Add any auto-fixed files
+git add .
+
+echo "All checks passed!"

@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import { authMessages } from './auth.message';
 import { AuthService } from './auth.service';
+import { PrismaClient } from '../../../../../generated/prisma';
 import { httpStatusCode } from '../../../../constants/httpStatusCode.constants';
 import { sendResponse } from '../../../../utils/sendResponse';
 
@@ -18,10 +18,10 @@ export class AuthController {
     );
 
     sendResponse(res, {
-      data: newUser,
-      message: authMessages.USER_REGISTERED,
-      statusCode: httpStatusCode.CREATED,
       success: true,
+      statusCode: httpStatusCode.CREATED,
+      message: authMessages.USER_REGISTERED,
+      data: newUser,
     });
   }
 
@@ -39,9 +39,9 @@ export class AuthController {
     });
 
     sendResponse(res, {
-      message: authMessages.USER_LOGGED_IN,
-      statusCode: httpStatusCode.OK,
       success: true,
+      statusCode: httpStatusCode.OK,
+      message: authMessages.USER_LOGGED_IN,
     });
   }
 
@@ -52,9 +52,9 @@ export class AuthController {
     });
 
     sendResponse(res, {
-      message: authMessages.USER_LOGGED_OUT,
-      statusCode: httpStatusCode.OK,
       success: true,
+      statusCode: httpStatusCode.OK,
+      message: authMessages.USER_LOGGED_OUT,
     });
   }
 }

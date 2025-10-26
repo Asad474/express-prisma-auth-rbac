@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { ZodError, ZodType } from 'zod';
 import { httpStatusCode } from '../constants/httpStatusCode.constants';
 import { sendResponse } from '../utils/sendResponse';
@@ -25,10 +25,9 @@ const validateBody = (schema: ZodType<any>) => {
           : firstError.message;
 
         sendResponse(res, {
-          data: err.issues,
-          message,
-          statusCode: httpStatusCode.BAD_REQUEST,
           success: false,
+          statusCode: httpStatusCode.BAD_REQUEST,
+          message,
         });
         return;
       }

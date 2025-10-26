@@ -1,0 +1,222 @@
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Create a new user account
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            example:
+              email: 'user@example.com'
+              password: 'securePassword123'
+              firstName: 'John'
+              lastName: 'Doe'
+              username: 'johndoe123'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                statusCode: 201
+                message: 'User registered successfully'
+                data:
+                  id: '550e8400-e29b-41d4-a716-446655440000'
+                  email: 'user@example.com'
+                  firstName: 'John'
+                  lastName: 'Doe'
+                  username: 'johndoe123'
+                  role: 'user'
+                  createdAt: '2023-01-01T00:00:00Z'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                statusCode: 409
+                message: 'User with this email already exists'
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and set JWT token in HTTP-only cookie
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: 'user@example.com'
+              password: 'securePassword123'
+      responses:
+        '200':
+          description: Login successful
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              example: 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=86400'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                statusCode:
+                message: 'Login successful'
+                data:
+                  user:
+                    id: '550e8400-e29b-41d4-a716-446655440000'
+                    email: 'user@example.com'
+                    firstName: 'John'
+                    lastName: 'Doe'
+                    username: 'johndoe123'
+                    role: 'user'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                statusCode: 401
+                message: 'Invalid email or password'
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Clear authentication cookie
+      operationId: logoutUser
+      security:
+        - CookieAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              example: 'token=; Path=/; HttpOnly; Expires=Thu, 01 Jan 1970 00:00:00 GMT'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                statusCode: 200
+                message: 'Logout successful'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+        - firstName
+        - username
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: 'user@example.com'
+        password:
+          type: string
+          format: password
+          minLength: 8
+          description: User's password (min 8 characters)
+          example: 'securePassword123'
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: User's first name
+          example: 'John'
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: User's last name
+          example: 'Doe'
+        username:
+          type: string
+          minLength: 3
+          maxLength: 30
+          pattern: '^[a-zA-Z0-9_]+$'
+          description: Unique username (letters, numbers, underscores only)
+          example: 'johndoe123'
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: 'user@example.com'
+        password:
+          type: string
+          format: password
+          description: User's password
+          example: 'securePassword123'
+
+    UserAuthResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '550e8400-e29b-41d4-a716-446655440000'
+        email:
+          type: string
+          format: email
+          example: 'user@example.com'
+        firstName:
+          type: string
+          example: 'John'
+        lastName:
+          type: string
+          example: 'Doe'
+        username:
+          type: string
+          example: 'johndoe123'
+        role:
+          type: string
+          example: 'user'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2023-01-01T00:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2023-01-01T00:00:00Z'

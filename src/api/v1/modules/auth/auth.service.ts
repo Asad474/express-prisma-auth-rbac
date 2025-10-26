@@ -1,12 +1,13 @@
-import { PrismaClient } from '@prisma/client';
 import { authMessages } from './auth.message';
 import { AuthRepository } from './auth.repository';
 import { ILogin, IRegister } from './auth.types';
+import { PrismaClient } from '../../../../../generated/prisma';
+import { httpStatusCode } from '../../../../constants/httpStatusCode.constants';
 import { AppError } from '../../../../utils/AppError';
 import { generateToken } from '../../../../utils/generateToken';
 import {
-  generatePassword,
   comparePassword,
+  generatePassword,
 } from '../../../../utils/passwordUtility';
 
 export class AuthService {
@@ -37,7 +38,10 @@ export class AuthService {
     const existingUser = await this.authRepository.getUser(email, prisma);
 
     if (existingUser) {
-      throw new AppError(400, authMessages.USER_ALREADY_EXISTS);
+      throw new AppError(
+        httpStatusCode.CONFLICT,
+        authMessages.USER_ALREADY_EXISTS,
+      );
     }
 
     const hashedPassword = await generatePassword(password);
@@ -79,7 +83,7 @@ export class AuthService {
 
     const existingUser = await this.authRepository.getUser(email, prisma);
     if (!existingUser) {
-      throw new AppError(404, authMessages.USER_NOT_FOUND);
+      throw new AppError(httpStatusCode.NOT_FOUND, authMessages.USER_NOT_FOUND);
     }
 
     const isPasswordValid = await comparePassword(

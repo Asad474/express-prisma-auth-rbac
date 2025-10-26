@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
 import { Router } from 'express';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
 import { authValidator } from './auth.validation';
+import { PrismaClient } from '../../../../../generated/prisma';
 import validateData from '../../../../middleware/validator';
 
 export const authRouter = (prisma: PrismaClient): Router => {

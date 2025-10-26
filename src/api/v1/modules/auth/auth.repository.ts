@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-import { User } from '../../../../../generated/prisma';
+import { PrismaClient, User } from '../../../../../generated/prisma';
 
 export class AuthRepository {
   async getUser(email: string, prisma: PrismaClient): Promise<User | null> {

@@ -5,11 +5,12 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon src/server.ts",
-    "lint": "eslint src --ext .ts",
-    "format": "eslint src --ext .ts --fix",
+    "lint": "eslint src --ext .ts --fix",
     "db:migrate": "prisma migrate dev",
+    "db:reset": "prisma migrate reset",
     "db:generate": "prisma generate",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -19,8 +20,11 @@
     "@types/bcryptjs": "^3.0.0",
     "@types/cookie-parser": "^1.4.9",
     "@types/express": "^5.0.3",
+    "@types/js-yaml": "^4.0.9",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^24.1.0",
+    "@types/swagger-ui-express": "^4.1.8",
     "dotenv": "^17.2.1",
     "eslint": "^9.32.0",
     "eslint-plugin-import": "^2.32.0",
@@ -29,6 +33,7 @@
     "eslint-plugin-unicorn": "^61.0.2",
     "eslint-plugin-unused-imports": "^4.3.0",
     "express": "^5.1.0",
+    "husky": "^9.1.7",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "prisma": "^6.13.0",
@@ -43,6 +48,10 @@
     "glob": "^11.0.3",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.1",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.18.3",
+    "winston-daily-rotate-file": "^5.0.0",
     "zod": "^4.0.14"
   },
   "description": ""
