@@ -6,22 +6,15 @@ import logger from '../logger';
 import { AppError } from '../utils/AppError';
 import { sendResponse } from '../utils/sendResponse';
 
-export const notFound = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
-  logger.warn('Route not found', {
-    method: req.method,
-    url: req.originalUrl,
-    ip: req.ip,
-  });
-
-  const error = new AppError(httpStatusCode.NOT_FOUND, 'Route not found');
+const notFound = (req: Request, res: Response, next: NextFunction): void => {
+  const error = new AppError(
+    httpStatusCode.NOT_FOUND,
+    commonMessages.INVALID_ROUTE_REQUESTED,
+  );
   next(error);
 };
 
-export const errorMiddleware = (
+const errorMiddleware = (
   err: Error,
   req: Request,
   res: Response,
@@ -35,14 +28,7 @@ export const errorMiddleware = (
     message = err.message;
   }
 
-  logger.error('API Error', {
-    message: err.message,
-    stack: err.stack,
-    url: req.url,
-    method: req.method,
-    ip: req.ip,
-    statusCode,
-  });
+  logger.error(err);
 
   sendResponse(res, {
     success: false,
@@ -50,3 +36,5 @@ export const errorMiddleware = (
     message,
   });
 };
+
+export default [notFound, errorMiddleware];

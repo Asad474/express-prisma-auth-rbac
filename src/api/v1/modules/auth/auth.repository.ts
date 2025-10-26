@@ -6,4 +6,19 @@ export class AuthRepository {
       where: { email },
     });
   }
+
+  async createUser(
+    data: {
+      email: string;
+      firstName: string;
+      lastName?: string;
+      password: string;
+      username: string;
+    },
+    prisma: PrismaClient,
+  ): Promise<User> {
+    return await prisma.user.create({
+      data,
+    });
+  }
 }

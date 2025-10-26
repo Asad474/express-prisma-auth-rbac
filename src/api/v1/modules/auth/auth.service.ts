@@ -46,15 +46,16 @@ export class AuthService {
 
     const hashedPassword = await generatePassword(password);
 
-    const newUser = await prisma.user.create({
-      data: {
+    const newUser = await this.authRepository.createUser(
+      {
         email,
         firstName,
+        lastName,
         password: hashedPassword,
         username,
-        ...(lastName && { lastName }),
       },
-    });
+      prisma,
+    );
 
     return {
       email: newUser.email,
@@ -83,7 +84,10 @@ export class AuthService {
 
     const existingUser = await this.authRepository.getUser(email, prisma);
     if (!existingUser) {
-      throw new AppError(httpStatusCode.NOT_FOUND, authMessages.USER_NOT_FOUND);
+      throw new AppError(
+        httpStatusCode.UNAUTHORIZED,
+        authMessages.INVALID_CREDENTIALS,
+      );
     }
 
     const isPasswordValid = await comparePassword(
@@ -92,7 +96,10 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new AppError(400, authMessages.INVALID_CREDENTIALS);
+      throw new AppError(
+        httpStatusCode.UNAUTHORIZED,
+        authMessages.INVALID_CREDENTIALS,
+      );
     }
 
     const token = generateToken(existingUser.username);

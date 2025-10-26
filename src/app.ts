@@ -3,7 +3,7 @@ import express, { Express } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import { PrismaClient } from '../generated/prisma';
 import { mainRouter } from './api/v1/modules/index.router';
-import { errorMiddleware, notFound } from './middleware/error';
+import errorMiddleware from './middleware/error';
 import httpLogger from './middleware/httpLogger';
 import { loadSwaggerSpec } from './swagger/swagger';
 
@@ -22,7 +22,6 @@ const createApp = (prisma: PrismaClient): Express => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   app.use('/api/v1', mainRouter(prisma));
 
-  app.use(notFound);
   app.use(errorMiddleware);
 
   return app;
