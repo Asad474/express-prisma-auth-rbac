@@ -1,0 +1,25 @@
+# Node modules and build output
+node_modules
+dist
+
+# Environment files
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Git and editor stuff
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+
+# Config / docs not needed in image
+.prettierrc
+.eslintrc.*
+Dockerfile
+README.md

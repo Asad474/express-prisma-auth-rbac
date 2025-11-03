@@ -4,4 +4,3 @@ node_modules
 .env.test
 
 /generated/prisma
-package-lock.json
